@@ -1,17 +1,32 @@
 <script setup>
 import { RouterView } from 'vue-router'
 import Navbar from './components/Navbar.vue'
+import CreateTaskForm from './components/CreateTaskForm.vue'
+import {useUIStore} from './stores/UIStore';
+import {storeToRefs} from 'pinia';
+
+const uiStore = useUIStore();
+const {showTaskCreationForm} = storeToRefs(uiStore);
+
 </script>
 
 <template>
+  <div class="wrapper p-2">
   <Navbar />
+  <CreateTaskForm :showTaskCreationForm="showTaskCreationForm"/>
   <RouterView />
+  </div>
 </template>
 
 <style scoped>
 header {
   line-height: 1.5;
   max-height: 100vh;
+}
+
+.wrapper {
+  display: grid;
+  gap: 1rem;
 }
 
 .logo {

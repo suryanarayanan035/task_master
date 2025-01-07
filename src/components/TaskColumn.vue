@@ -1,33 +1,65 @@
 <script setup>
   import Divider from 'primevue/divider';
+  import Button from 'primevue/button';
   import TaskCard from '../components/TaskCard.vue';
-  import { ref } from 'vue';
+  import { ref, watch, computed } from 'vue';
   import draggable from 'vuedraggable';
-  const { tasks } = defineProps({
+  import {useUIStore} from '../stores/UIStore';
+  import {updateTaskById} from '../lib/backendApi';
+  import {useToast} from 'vue-toastification';
+  import {TASK_STATUSES_NUMBER_MAPPING} from '../lib/utils';
+  const toast = useToast();
+  const UIStore = useUIStore();
+  const props = defineProps({
     tasks: {
     type: Array,
-    default: [{title: 'TODO Task 1'},{title: 'InProgress Task 1'},{title: 'Done Task 1'}],
+    required: true,
     },
     status: String,
   });
-  const reactiveTasks = ref(tasks);
+  const reactiveTasks = computed(() => props.tasks);
+
+
   const onMove = (event, originalEvent) => {
     console.log({event, originalEvent});
   }
   const onEnd = (event) => {
     console.log(event);
     event.item
+  }
 
+  const onChange = async (event) => {
+    console.log('Change', event, props.status);
+    if(event.added) {
+      const {id, title, description, assignee} = event.added.element;
+      const {error} = await updateTaskById(id, title, description,TASK_STATUSES_NUMBER_MAPPING[props.status], assignee);
+      if(error) {
+        toast.error('Error updating task' +  error);
+      }
+
+
+    }
+  }
+  const openTaskCreationForm = () => {
+    UIStore.setSelectedTask({});
+    UIStore.setShowTaskCreationForm(true);
   }
   </script>
 <template>
   <div class="task-column">
-      <h3> {{status}} </h3>
-      <Divider />
-      <draggable :list="reactiveTasks"  item-key="id" class="task-list" group="status" :move="onMove" @end="onEnd">
-            <template #item="{element: task}">
-              <TaskCard :title="task.title" :description="task.description" :key="task"/>
-            </template>
+      <draggable :list="reactiveTasks"  item-key="id" class="task-list" group="status" @move="onMove" @end="onEnd" @change="onChange">
+        <template #header>
+            <div class="pl-2 uppercase pt-1">
+              <h3 class="text-xl"> {{status}} </h3>
+            </div>
+            <Divider />
+        </template>
+        <template #item="{element: task}">
+          <TaskCard :title="task.title" :id="task.id" :description="task.description" :key="task"/>
+        </template>
+        <template #footer>
+          <Button label="Add Task" @click="openTaskCreationForm"/>
+        </template>
       </draggable>
   </div>
 </template>

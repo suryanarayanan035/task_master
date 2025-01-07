@@ -27,20 +27,13 @@
     }
 </script>
 <template>
-  <Form v-slot="$form" :initialValues="form" @submit="onSubmit">
-  <InputGroup class="mb-1">
-    <InputGroupAddon>
-      <i class="pi pi-user"></i>
-    </InputGroupAddon>
-    <InputText v-model="form.email" placeholder="Email"/>
-  </InputGroup>
-  <InputGroup>
-    <InputGroupAddon>
-      <i class="pi pi-lock"></i>
-    </InputGroupAddon>
-    <InputText v-model="form.password" placeholder="Password" type="password"/>
-  </InputGroup>
-  <Button label="Login" icon="pi pi-lock" type="submit"/>
-  </Form>
-  <Button label="Sign in with Cognito" @click="triggerCognitoAuthFlow"></Button>
+  <div class="gap-2 items-center mx-auto border border-black-500 self-center max-w-lg p-4">
+    <h1 class="text-center text-3xl">
+      <i class="pi pi-user">&nbsp;</i>
+      <span class="mb-2 text-center">Login</span>
+    </h1>
+    </div>
+    <div class="flex justify-center">
+    <Button label="Sign in with Cognito" @click="triggerCognitoAuthFlow" class="w-1/2"></Button>
+    </div>
 </template>

@@ -16,6 +16,6 @@
         $cookies.set("accessToken", user.access_token, 60*60);
         $cookies.set("idToken", user.id_token, 60*60);
         $cookies.set("refreshToken", user.refresh_token, 60*60*24*5);
-        router.push({name: 'home'});
+        window.location.href = "/";
     });
 </script>

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import { useAuthStore } from '../stores/AuthStore'
+import { getProjectsOfUser } from '../lib/backendApi.js'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,6 +35,19 @@ const router = createRouter({
       component: () => import('../views/LoginCallback.vue'),
     },
     {
+      path: '/create_project',
+      name: 'create_project',
+      component: () => import('../views/CreateProjectView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/users',
+      name: 'users',
+      component: () => import('../views/UsersView.vue'),
+      meta: { requiresAuth: true },
+    },
+
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting
@@ -44,18 +58,33 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   console.log({ to, from, next })
   const authStore = useAuthStore()
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    console.log({ authStore })
-    if ($cookies.get('accessToken') == null) {
+    if ($cookies.get('idToken') == null) {
       next({
         name: 'login',
         query: { redirect: to.fullPath },
       })
     } else {
-      next()
+      const { projects, error } = await getProjectsOfUser()
+      if (projects?.length < 1) {
+        next({
+          name: 'create_project',
+        })
+      } else {
+        const currentProjectIdInLocalStorage = localStorage.getItem('currentProjectId')
+        if (
+          currentProjectIdInLocalStorage &&
+          ![null, undefined, 'null', 'undefined'].includes(currentProjectIdInLocalStorage)
+        ) {
+          next()
+        } else {
+          localStorage.setItem('currentProjectId', projects[0].id)
+          next()
+        }
+      }
       return
     }
   } else {

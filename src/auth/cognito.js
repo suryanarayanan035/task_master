@@ -5,7 +5,7 @@ const cognitoAuthConfig = {
   client_id: '1v3622thus3soqp3tr00d43p82',
   redirect_uri: 'http://localhost:5173/login_callback',
   response_type: 'code',
-  scope: 'phone openid email',
+  scope: 'phone openid email aws.cognito.signin.user.admin profile',
   userinfo_endpoint: '/oauth2/userInfo',
 }
 
