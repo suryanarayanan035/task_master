@@ -1,5 +1,4 @@
 import axios from 'axios'
-import VueCookies from 'vue-cookies'
 const backendApi = axios.create({
   baseURL: 'https://6b6yabd5cf.execute-api.ap-south-1.amazonaws.com/Prod/',
 })
@@ -39,7 +38,7 @@ export const addUserToProject = async (projectId, email) => {
       `users`,
       {
         email,
-        project: projectId,
+        projectId,
       },
       {
         headers: { Authorization: getIdToken() },
@@ -110,7 +109,7 @@ export const createTask = async (title, description, projectId, assignee, priori
   }
 }
 
-export const updateTaskById = async (taskId, title, description, status, assignee) => {
+export const updateTaskById = async (taskId, title, description, status, assignee, priority) => {
   try {
     const response = await backendApi.put(
       `tasks/${taskId}`,
@@ -119,6 +118,7 @@ export const updateTaskById = async (taskId, title, description, status, assigne
         description,
         status,
         assignee,
+        priority,
       },
       {
         headers: { Authorization: getIdToken() },

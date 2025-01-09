@@ -14,8 +14,18 @@ export const refreshTasksList = async () => {
   }
 }
 
-export const TASK_STATUSES_NUMBER_MAPPING = {
+export const TASK_STATUSES = {
   'To Do': 0,
   'In Progress': 1,
   Done: 2,
+}
+
+export const TASK_PRIORITIES = {
+  Low: 0,
+  Medium: 1,
+  High: 2,
+}
+
+export const getKeyValuePairFromValue = (obj, valueToSearch) => {
+  return Object.entries(obj).find(([key, value]) => value == valueToSearch)
 }

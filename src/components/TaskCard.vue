@@ -19,7 +19,7 @@
   const {updateUIState} = UIStore;
 
   const handleCardClick = () => {
-    console.log({id});
+    console.log({id, title, description, assignee, priority, status});
     updateUIState({showTaskCreationForm: true, selectedTask: {id, title, description, assignee, priority, status}});
   }
   </script>

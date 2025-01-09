@@ -7,7 +7,7 @@
   import {useUIStore} from '../stores/UIStore';
   import {updateTaskById} from '../lib/backendApi';
   import {useToast} from 'vue-toastification';
-  import {TASK_STATUSES_NUMBER_MAPPING} from '../lib/utils';
+  import {TASK_STATUSES} from '../lib/utils';
   const toast = useToast();
   const UIStore = useUIStore();
   const props = defineProps({
@@ -32,7 +32,7 @@
     console.log('Change', event, props.status);
     if(event.added) {
       const {id, title, description, assignee} = event.added.element;
-      const {error} = await updateTaskById(id, title, description,TASK_STATUSES_NUMBER_MAPPING[props.status], assignee);
+      const {error} = await updateTaskById(id, title, description,TASK_STATUSES[props.status], assignee);
       if(error) {
         toast.error('Error updating task' +  error);
       }
@@ -55,7 +55,7 @@
             <Divider />
         </template>
         <template #item="{element: task}">
-          <TaskCard :title="task.title" :id="task.id" :description="task.description" :key="task"/>
+          <TaskCard :title="task.title" :id="task.id" :description="task.description" :priority="task.priority" :status="task.status" :assignee="task.assignee" :key="task"/>
         </template>
         <template #footer>
           <Button label="Add Task" @click="openTaskCreationForm"/>
